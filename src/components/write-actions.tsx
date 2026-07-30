@@ -7,6 +7,23 @@ import { parseGen } from "@/lib/format";
 import { useTransactions } from "./transaction-provider";
 import { useWallet } from "./wallet-provider";
 
+const DEMO_CASE = {
+  id: "case-nist-csf-2-public-record",
+  url: "https://www.nist.gov/news-events/news/2024/02/nist-releases-version-20-landmark-cybersecurity-framework",
+  claim: "NIST announced version 2.0 of the Cybersecurity Framework in February 2024.",
+  context: "Create a public evidence certificate for a governance and security training workflow.",
+  bond: "2",
+};
+
+const DEMO_CHALLENGE = {
+  url: "https://www.nist.gov/cyberframework",
+  summary: "This official NIST Cybersecurity Framework page provides additional public context validators can use to confirm the release announcement's relevance.",
+};
+
+function demoSuffix() {
+  return Date.now().toString().slice(-6);
+}
+
 export function CaseForm() {
   const router = useRouter();
   const wallet = useWallet();
@@ -41,6 +58,13 @@ export function CaseForm() {
 
   return (
     <form onSubmit={submit} className="panel p-6">
+      <button
+        type="button"
+        className="btn-secondary mb-5"
+        onClick={() => setState({ ...DEMO_CASE, id: `${DEMO_CASE.id}-${demoSuffix()}` })}
+      >
+        Use demo data
+      </button>
       <p className="mb-5 border border-blue-500/40 bg-blue-500/10 p-3 text-sm text-blue-100">
         Use a requester wallet here, not the steward wallet. After consensus, settlement is callable by anyone and paid to the contract-selected recipient.
       </p>
@@ -129,6 +153,13 @@ export function ChallengeForm({ caseId, status, requester, steward }: { caseId: 
   return (
     <form onSubmit={submit} className="panel p-5">
       <div className="label">Challenge Witness</div>
+      <button
+        type="button"
+        className="btn-secondary mt-4"
+        onClick={() => setState(DEMO_CHALLENGE)}
+      >
+        Use demo data
+      </button>
       <div className="mt-4 grid gap-4">
         <Field label="Challenge URL" value={state.url} onChange={(url) => setState({ ...state, url })} placeholder="https://..." />
         <Area label="Challenge Summary" value={state.summary} onChange={(summary) => setState({ ...state, summary })} />
