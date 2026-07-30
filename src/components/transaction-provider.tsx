@@ -16,6 +16,7 @@ const TransactionContext = createContext<TransactionContextValue | null>(null);
 const COMPLETE_STATUSES = ["ACCEPTED", "FINALIZED", "CANCELED", "UNDETERMINED"] as const;
 const ACTIVE_STATUSES = ["PENDING", "PROPOSING", "COMMITTING", "REVEALING", "READY_TO_FINALIZE"] as const;
 const STALE_AFTER_MS = 2 * 60 * 60 * 1000;
+const EXPLORER_TX_BASE = "https://explorer-studio.genlayer.com/tx";
 
 function shouldRefresh(tx: StoredTransaction) {
   if (!ACTIVE_STATUSES.includes(tx.status as never)) return false;
@@ -123,7 +124,14 @@ export function TransactionRail() {
                   />
                 ))}
               </div>
-              <div className="mono mt-2 truncate text-xs text-muted">{tx.hash}</div>
+              <a
+                className="mono mt-2 block truncate text-xs text-brand underline-offset-4 hover:underline"
+                href={`${EXPLORER_TX_BASE}/${tx.hash}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                View in explorer: {tx.hash}
+              </a>
             </div>
           ))
         )}
