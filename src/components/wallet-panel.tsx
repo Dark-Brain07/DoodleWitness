@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Download, KeyRound, PlugZap } from "lucide-react";
+import { Copy, Download, KeyRound, LogOut, PlugZap } from "lucide-react";
 import { useWallet } from "./wallet-provider";
 import { shortenAddress } from "@/lib/format";
 
@@ -27,6 +27,11 @@ export function WalletPanel() {
     setMessage("Private key copied. Store it carefully.");
   }
 
+  function disconnect() {
+    wallet.disconnect();
+    setMessage("Wallet disconnected. Browser wallet key remains saved.");
+  }
+
   return (
     <div className="relative">
       <button className="btn-primary px-3 py-2 text-xs" onClick={() => setOpen((value) => !value)}>
@@ -40,6 +45,9 @@ export function WalletPanel() {
             <button className="btn-secondary justify-center" onClick={connectInjected}><PlugZap size={14} /> Use injected wallet</button>
             <button className="btn-secondary justify-center" onClick={wallet.useGenerated}><KeyRound size={14} /> Use browser wallet</button>
             <button className="btn-secondary justify-center" onClick={copyKey}><Download size={14} /> Export browser key</button>
+            {wallet.mode !== "none" ? (
+              <button className="btn-secondary justify-center" onClick={disconnect}><LogOut size={14} /> Disconnect wallet</button>
+            ) : null}
           </div>
           <div className="mt-4 border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-100">
             Browser wallets store a private key in this browser. Clearing site data destroys it. Export before relying on it.

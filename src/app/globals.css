@@ -28,6 +28,10 @@
 
 * { box-sizing: border-box; }
 
+html {
+  font-size: 80%;
+}
+
 html, body {
   background: var(--bg);
   color: var(--text);

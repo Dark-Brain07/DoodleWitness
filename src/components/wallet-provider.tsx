@@ -15,6 +15,7 @@ type WalletContextValue = {
   connectInjected: () => Promise<void>;
   useGenerated: () => void;
   importGenerated: (privateKey: `0x${string}`) => void;
+  disconnect: () => void;
   exportPrivateKey: () => `0x${string}` | null;
   getWriteClient: () => Promise<Awaited<ReturnType<typeof createInjectedClient>>>;
 };
@@ -74,6 +75,12 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     setMode("generated");
   }, []);
 
+  const disconnect = useCallback(() => {
+    setMode("none");
+    setAddress(undefined);
+    setPrivateKey(null);
+  }, []);
+
   const exportPrivateKey = useCallback(() => privateKey, [privateKey]);
 
   const getWriteClient = useCallback(async () => {
@@ -83,8 +90,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   }, [address, mode, privateKey]);
 
   const value = useMemo(
-    () => ({ mode, address, warningAccepted, connectInjected, useGenerated, importGenerated, exportPrivateKey, getWriteClient }),
-    [address, connectInjected, exportPrivateKey, getWriteClient, importGenerated, mode, useGenerated, warningAccepted],
+    () => ({ mode, address, warningAccepted, connectInjected, useGenerated, importGenerated, disconnect, exportPrivateKey, getWriteClient }),
+    [address, connectInjected, disconnect, exportPrivateKey, getWriteClient, importGenerated, mode, useGenerated, warningAccepted],
   );
 
   return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>;
