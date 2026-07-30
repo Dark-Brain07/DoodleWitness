@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { StoredTransaction, TxStage } from "@/lib/types";
 import { readTransactions, writeTransactions } from "@/lib/storage";
+import { createReadClient } from "@/lib/genlayer/read-client";
 
 type TransactionContextValue = {
   transactions: StoredTransaction[];
@@ -30,6 +31,34 @@ export function TransactionProvider({ children }: { children: React.ReactNode })
     persist(readTransactions().map((item) => (item.hash === hash ? { ...item, status } : item)));
   }, [persist]);
 
+  useEffect(() => {
+    const pending = readTransactions().filter((tx) => !["ACCEPTED", "FINALIZED", "CANCELED"].includes(tx.status));
+    if (pending.length === 0) return;
+    const client = createReadClient();
+    let cancelled = false;
+    async function refresh() {
+      const refreshed = await Promise.all(pending.map(async (tx) => {
+        try {
+          const onchain = await client.getTransaction({ hash: tx.hash });
+          const status = String(onchain?.statusName ?? tx.status).toUpperCase() as TxStage;
+          return { ...tx, status };
+        } catch {
+          return tx;
+        }
+      }));
+      if (cancelled) return;
+      const current = readTransactions();
+      const byHash = new Map(refreshed.map((tx) => [tx.hash, tx]));
+      persist(current.map((tx) => byHash.get(tx.hash) ?? tx));
+    }
+    refresh();
+    const interval = window.setInterval(refresh, 15000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, [persist]);
+
   const value = useMemo(() => ({ transactions, track, update }), [track, transactions, update]);
   return <TransactionContext.Provider value={value}>{children}</TransactionContext.Provider>;
 }
@@ -45,11 +74,12 @@ export function TransactionRail() {
   const stages = ["PENDING", "PROPOSING", "COMMITTING", "REVEALING", "ACCEPTED", "FINALIZED"];
   return (
     <aside className="panel p-5">
-      <div className="label">Consensus Ledger</div>
-      <h2 className="mt-1 text-2xl font-semibold text-text">Live transactions</h2>
+      <div className="label">Wallet Activity</div>
+      <h2 className="mt-1 text-2xl font-semibold text-text">Recent transactions</h2>
+      <p className="mt-2 text-xs text-muted">Local transaction history from this browser, refreshed from GenLayer when available.</p>
       <div className="mt-5 space-y-4">
         {transactions.length === 0 ? (
-          <p className="text-sm text-muted">Writes will appear here and survive refresh.</p>
+          <p className="text-sm text-muted">Writes you send from this browser will appear here.</p>
         ) : (
           transactions.map((tx) => (
             <div key={tx.hash} className="panel-soft p-3">
