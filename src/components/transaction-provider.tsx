@@ -7,15 +7,31 @@ import { createReadClient } from "@/lib/genlayer/read-client";
 
 type TransactionContextValue = {
   transactions: StoredTransaction[];
+  clear: () => void;
   track: (tx: StoredTransaction) => void;
   update: (hash: StoredTransaction["hash"], status: TxStage) => void;
 };
 
 const TransactionContext = createContext<TransactionContextValue | null>(null);
+const COMPLETE_STATUSES = ["ACCEPTED", "FINALIZED", "CANCELED", "UNDETERMINED"] as const;
+const ACTIVE_STATUSES = ["PENDING", "PROPOSING", "COMMITTING", "REVEALING", "READY_TO_FINALIZE"] as const;
+const STALE_AFTER_MS = 2 * 60 * 60 * 1000;
+
+function shouldRefresh(tx: StoredTransaction) {
+  if (!ACTIVE_STATUSES.includes(tx.status as never)) return false;
+  const created = Date.parse(tx.createdAt);
+  return Number.isNaN(created) || Date.now() - created < STALE_AFTER_MS;
+}
+
+function normalizeStoredTransactions(items: StoredTransaction[]) {
+  return items.map((tx) => (
+    COMPLETE_STATUSES.includes(tx.status as never) || shouldRefresh(tx) ? tx : { ...tx, status: "UNDETERMINED" as TxStage }
+  ));
+}
 
 export function TransactionProvider({ children }: { children: React.ReactNode }) {
   const [transactions, setTransactions] = useState<StoredTransaction[]>(() =>
-    typeof window === "undefined" ? [] : readTransactions(),
+    typeof window === "undefined" ? [] : normalizeStoredTransactions(readTransactions()),
   );
 
   const persist = useCallback((items: StoredTransaction[]) => {
@@ -31,8 +47,12 @@ export function TransactionProvider({ children }: { children: React.ReactNode })
     persist(readTransactions().map((item) => (item.hash === hash ? { ...item, status } : item)));
   }, [persist]);
 
+  const clear = useCallback(() => persist([]), [persist]);
+
   useEffect(() => {
-    const pending = readTransactions().filter((tx) => !["ACCEPTED", "FINALIZED", "CANCELED"].includes(tx.status));
+    const staleMarked = normalizeStoredTransactions(readTransactions());
+    writeTransactions(staleMarked);
+    const pending = staleMarked.filter(shouldRefresh);
     if (pending.length === 0) return;
     const client = createReadClient();
     let cancelled = false;
@@ -43,6 +63,10 @@ export function TransactionProvider({ children }: { children: React.ReactNode })
           const status = String(onchain?.statusName ?? tx.status).toUpperCase() as TxStage;
           return { ...tx, status };
         } catch {
+          const created = Date.parse(tx.createdAt);
+          if (!Number.isNaN(created) && Date.now() - created >= STALE_AFTER_MS) {
+            return { ...tx, status: "UNDETERMINED" as TxStage };
+          }
           return tx;
         }
       }));
@@ -59,7 +83,7 @@ export function TransactionProvider({ children }: { children: React.ReactNode })
     };
   }, [persist]);
 
-  const value = useMemo(() => ({ transactions, track, update }), [track, transactions, update]);
+  const value = useMemo(() => ({ transactions, clear, track, update }), [clear, track, transactions, update]);
   return <TransactionContext.Provider value={value}>{children}</TransactionContext.Provider>;
 }
 
@@ -70,12 +94,15 @@ export function useTransactions() {
 }
 
 export function TransactionRail() {
-  const { transactions } = useTransactions();
+  const { clear, transactions } = useTransactions();
   const stages = ["PENDING", "PROPOSING", "COMMITTING", "REVEALING", "ACCEPTED", "FINALIZED"];
   return (
     <aside className="panel p-5">
       <div className="label">Wallet Activity</div>
-      <h2 className="mt-1 text-2xl font-semibold text-text">Recent transactions</h2>
+      <div className="mt-1 flex items-center justify-between gap-3">
+        <h2 className="text-2xl font-semibold text-text">Recent transactions</h2>
+        {transactions.length > 0 ? <button className="btn-secondary px-3 py-2 text-xs" onClick={clear}>Clear</button> : null}
+      </div>
       <p className="mt-2 text-xs text-muted">Local transaction history from this browser, refreshed from GenLayer when available.</p>
       <div className="mt-5 space-y-4">
         {transactions.length === 0 ? (
