@@ -42,15 +42,15 @@ export function WalletPanel() {
           <div className="label">Active Identity</div>
           <div className="mono mt-1 break-all text-sm text-text">{wallet.address ?? "Read-only visitor"}</div>
           <div className="mt-4 grid gap-2">
-            <button className="btn-secondary justify-center" onClick={connectInjected}><PlugZap size={14} /> Use injected wallet</button>
             <button className="btn-secondary justify-center" onClick={wallet.useGenerated}><KeyRound size={14} /> Use browser wallet</button>
+            <button className="btn-secondary justify-center" onClick={connectInjected}><PlugZap size={14} /> Use injected wallet</button>
             <button className="btn-secondary justify-center" onClick={copyKey}><Download size={14} /> Export browser key</button>
             {wallet.mode !== "none" ? (
               <button className="btn-secondary justify-center" onClick={disconnect}><LogOut size={14} /> Disconnect wallet</button>
             ) : null}
           </div>
           <div className="mt-4 border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-100">
-            Browser wallets store a private key in this browser. Clearing site data destroys it. Export before relying on it.
+            Browser wallet is recommended for StudioNet writes. Injected wallets may reject GenLayer RPC calls. Export the browser key before relying on it.
           </div>
           <label className="label mt-4 block" htmlFor="import-key">Import browser key</label>
           <div className="mt-2 flex gap-2">

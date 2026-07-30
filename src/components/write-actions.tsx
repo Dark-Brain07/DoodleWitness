@@ -24,6 +24,14 @@ function demoSuffix() {
   return Date.now().toString().slice(-6);
 }
 
+function writeErrorMessage(error: unknown, fallback: string) {
+  const message = error instanceof Error ? error.message : String(error);
+  if (message.includes("Failed to fetch Version") || message.includes("unknown RPC error")) {
+    return "Injected wallet RPC is not compatible with this GenLayer StudioNet write. Use the browser wallet, or import a browser key, then try again.";
+  }
+  return error instanceof Error ? error.message : fallback;
+}
+
 export function CaseForm() {
   const router = useRouter();
   const wallet = useWallet();
@@ -50,7 +58,7 @@ export function CaseForm() {
       txs.update(hash, String(receipt.statusName ?? receipt.status ?? "ACCEPTED") as never);
       router.push(`/cases/${state.id}`);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Open case failed.");
+      setMessage(writeErrorMessage(error, "Open case failed."));
     } finally {
       setBusy(false);
     }
@@ -97,7 +105,7 @@ export function CaseActionButtons({ caseId, status, requester, steward }: { case
       txs.update(hash, String(receipt.statusName ?? receipt.status ?? "ACCEPTED") as never);
       setMessage(`Reached ${String(receipt.statusName ?? receipt.status)}.`);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Write failed.");
+      setMessage(writeErrorMessage(error, "Write failed."));
     }
   }
 
@@ -142,7 +150,7 @@ export function ChallengeForm({ caseId, status, requester, steward }: { caseId: 
       txs.update(hash, String(receipt.statusName ?? receipt.status ?? "ACCEPTED") as never);
       setMessage(`Challenge reached ${String(receipt.statusName ?? receipt.status)}.`);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Challenge failed.");
+      setMessage(writeErrorMessage(error, "Challenge failed."));
     } finally {
       setBusy(false);
     }
