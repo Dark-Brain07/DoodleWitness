@@ -193,13 +193,15 @@ def test_release_requires_witnessed(contract, direct_vm, direct_alice):
         contract.release_bond(cid)
 
 
-def test_requester_cannot_release_bond(contract, direct_vm, direct_alice):
+def test_requester_can_release_witnessed_bond_to_self(contract, direct_vm, direct_alice):
     cid = open_case(contract, direct_vm, direct_alice, value=2 * GEN)
     mock_witness(direct_vm, "WITNESSED", "HIGH")
     contract.witness_case(cid)
     direct_vm.sender = direct_alice
-    with direct_vm.expect_revert("Only steward"):
-        contract.release_bond(cid)
+    contract.release_bond(cid)
+    item = contract.get_case(cid)
+    assert item["status"] == "RELEASED"
+    assert item["released_to"] == str(direct_alice)
 
 
 def test_release_bond_returns_to_requester(contract, direct_vm, direct_alice):
@@ -221,13 +223,15 @@ def test_refund_requires_unclear(contract, direct_vm, direct_alice):
         contract.refund_unclear(cid)
 
 
-def test_requester_cannot_refund_unclear(contract, direct_vm, direct_alice):
+def test_requester_can_refund_unclear_bond_to_self(contract, direct_vm, direct_alice):
     cid = open_case(contract, direct_vm, direct_alice, value=2 * GEN)
     mock_witness(direct_vm, "UNCLEAR", "UNKNOWN")
     contract.witness_case(cid)
     direct_vm.sender = direct_alice
-    with direct_vm.expect_revert("Only steward"):
-        contract.refund_unclear(cid)
+    contract.refund_unclear(cid)
+    item = contract.get_case(cid)
+    assert item["status"] == "REFUNDED"
+    assert item["released_to"] == str(direct_alice)
 
 
 def test_refund_unclear_returns_to_requester(contract, direct_vm, direct_alice):
@@ -239,13 +243,15 @@ def test_refund_unclear_returns_to_requester(contract, direct_vm, direct_alice):
     assert contract.get_case(cid)["status"] == "REFUNDED"
 
 
-def test_forfeit_requires_steward(contract, direct_vm, direct_alice, direct_bob):
+def test_anyone_can_trigger_false_case_forfeit_to_steward(contract, direct_vm, direct_alice, direct_bob):
     cid = open_case(contract, direct_vm, direct_alice)
     mock_witness(direct_vm, "CONTRADICTED", "LOW")
     contract.witness_case(cid)
     direct_vm.sender = direct_bob
-    with direct_vm.expect_revert("Only steward"):
-        contract.forfeit_false_case(cid)
+    contract.forfeit_false_case(cid)
+    item = contract.get_case(cid)
+    assert item["status"] == "FORFEITED"
+    assert item["released_to"] == str(contract.steward)
 
 
 def test_forfeit_false_case(contract, direct_vm, direct_alice):

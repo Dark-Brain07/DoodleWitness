@@ -42,7 +42,7 @@ export function CaseForm() {
   return (
     <form onSubmit={submit} className="panel p-6">
       <p className="mb-5 border border-blue-500/40 bg-blue-500/10 p-3 text-sm text-blue-100">
-        Use a requester wallet here, not the steward wallet. The steward settles witnessed, unclear, or contradicted cases after review.
+        Use a requester wallet here, not the steward wallet. After consensus, settlement is callable by anyone and paid to the contract-selected recipient.
       </p>
       <div className="grid gap-4">
         <Field label="Case ID" value={state.id} onChange={(id) => setState({ ...state, id })} placeholder="xz-backdoor-disclosure" />
@@ -61,8 +61,6 @@ export function CaseActionButtons({ caseId, status, requester, steward }: { case
   const wallet = useWallet();
   const txs = useTransactions();
   const [message, setMessage] = useState("");
-  const connected = wallet.address?.toLowerCase();
-  const isSteward = Boolean(connected && connected === steward.toLowerCase());
 
   async function run(functionName: "witness_case" | "review_challenge" | "release_bond" | "refund_unclear" | "forfeit_false_case") {
     try {
@@ -83,20 +81,15 @@ export function CaseActionButtons({ caseId, status, requester, steward }: { case
     <div className="panel p-5">
       <div className="label">Actions</div>
       <p className="mt-3 text-xs leading-5 text-muted">
-        Requester: {requester}. Steward: {steward}. Settlement buttons are steward-only by contract.
+        Requester: {requester}. Steward: {steward}. Settlement is permissionless after consensus; the contract still fixes the payout destination.
       </p>
       <div className="mt-4 flex flex-wrap gap-3">
         {(status === "OPEN" || status === "UNCLEAR") ? <button className="btn-primary" onClick={() => run("witness_case")}>Witness by Consensus</button> : null}
         {status === "CHALLENGED" ? <button className="btn-primary" onClick={() => run("review_challenge")}>Review Challenge</button> : null}
-        {status === "WITNESSED" && isSteward ? <button className="btn-secondary" onClick={() => run("release_bond")}>Release Bond</button> : null}
-        {status === "UNCLEAR" && isSteward ? <button className="btn-secondary" onClick={() => run("refund_unclear")}>Refund Unclear</button> : null}
-        {status === "CONTRADICTED" && isSteward ? <button className="btn-secondary" onClick={() => run("forfeit_false_case")}>Forfeit False Case</button> : null}
+        {status === "WITNESSED" ? <button className="btn-secondary" onClick={() => run("release_bond")}>Release Bond</button> : null}
+        {status === "UNCLEAR" ? <button className="btn-secondary" onClick={() => run("refund_unclear")}>Refund Unclear</button> : null}
+        {status === "CONTRADICTED" ? <button className="btn-secondary" onClick={() => run("forfeit_false_case")}>Forfeit False Case</button> : null}
       </div>
-      {(status === "WITNESSED" || status === "UNCLEAR" || status === "CONTRADICTED") && !isSteward ? (
-        <p className="mt-4 border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-100">
-          Switch to the steward wallet to settle this case.
-        </p>
-      ) : null}
       {message ? <p className="mt-4 text-sm text-gray-300" aria-live="polite">{message}</p> : null}
     </div>
   );

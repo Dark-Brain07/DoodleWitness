@@ -146,8 +146,6 @@ class WebWitness(gl.Contract):
     @gl.public.write
     def release_bond(self, case_id: str) -> None:
         case = self._require_case(case_id)
-        if gl.message.sender_address != self.steward:
-            raise gl.vm.UserError(f"{ERROR_EXPECTED} Only steward can release")
         if case.status != STATUS_WITNESSED:
             raise gl.vm.UserError(f"{ERROR_EXPECTED} Case is not witnessed")
         amount = case.bond
@@ -165,8 +163,6 @@ class WebWitness(gl.Contract):
     @gl.public.write
     def refund_unclear(self, case_id: str) -> None:
         case = self._require_case(case_id)
-        if gl.message.sender_address != self.steward:
-            raise gl.vm.UserError(f"{ERROR_EXPECTED} Only steward can refund")
         if case.status != STATUS_UNCLEAR:
             raise gl.vm.UserError(f"{ERROR_EXPECTED} Case is not unclear")
         amount = case.bond
@@ -184,8 +180,6 @@ class WebWitness(gl.Contract):
     @gl.public.write
     def forfeit_false_case(self, case_id: str) -> None:
         case = self._require_case(case_id)
-        if gl.message.sender_address != self.steward:
-            raise gl.vm.UserError(f"{ERROR_EXPECTED} Only steward can forfeit")
         if case.status != STATUS_CONTRADICTED:
             raise gl.vm.UserError(f"{ERROR_EXPECTED} Case is not contradicted")
         amount = case.bond

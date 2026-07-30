@@ -22,13 +22,13 @@ The important part is that the contract does not trust the submitter's summary. 
 StudioNet contract:
 
 ```text
-0x6062404ebB1610B7Bfa0def38239d23053F018C9
+0xE6fe8207d1801F0caE01958b5525F1d7feAaCB00
 ```
 
 Deployment transaction:
 
 ```text
-0xe0f373be169967808d3501779550c2a340a0cc7739e86d6dac7235a7a9f03acc
+0xd4c5ea18b439890a63113e9dd9c11eaeb31e20302b0fe058dd79424500e75226
 ```
 
 Main methods:
@@ -39,9 +39,9 @@ Main methods:
 | `witness_case(case_id)` | consensus write | Fetches evidence and decides `WITNESSED`, `CONTRADICTED`, or `UNCLEAR`. |
 | `open_challenge(case_id, challenge_url, challenge_summary)` | write | Opens a dispute using another public source. |
 | `review_challenge(case_id)` | consensus write | Re-fetches primary and challenge evidence and records the updated outcome. |
-| `release_bond(case_id)` | write | Sends the bond back after a witnessed claim. |
-| `refund_unclear(case_id)` | write | Refunds the requester when evidence is unclear. |
-| `forfeit_false_case(case_id)` | write | Lets the steward forfeit a contradicted case bond. |
+| `release_bond(case_id)` | write | Permissionlessly sends the bond back after a witnessed claim. |
+| `refund_unclear(case_id)` | write | Permissionlessly refunds the requester when evidence is unclear. |
+| `forfeit_false_case(case_id)` | write | Permissionlessly forfeits a contradicted case bond to the steward. |
 | `get_summary()` | view | Reads platform totals. |
 | `list_cases(offset, limit)` | view | Reads the public case ledger. |
 | `get_case(case_id)` | view | Reads one case. |
@@ -54,7 +54,7 @@ Main methods:
 3. Run witness review. GenLayer validators fetch the source and agree on the result.
 4. If the result is wrong or incomplete, open a challenge with the requester or steward wallet.
 5. Run challenge review. The contract re-evaluates the case with both sources.
-6. Switch to the steward wallet for settlement: release, refund, or forfeit.
+6. Settle the case from any wallet. The contract chooses the destination from the consensus result: requester for witnessed or unclear, steward for contradicted.
 
 ## Environment
 
@@ -63,7 +63,7 @@ Create `.env.local`:
 ```bash
 NEXT_PUBLIC_GENLAYER_CHAIN=studionet
 NEXT_PUBLIC_GENLAYER_ENDPOINT=https://studio.genlayer.com/api
-NEXT_PUBLIC_WEBWITNESS_CONTRACT=0x6062404ebB1610B7Bfa0def38239d23053F018C9
+NEXT_PUBLIC_WEBWITNESS_CONTRACT=0xE6fe8207d1801F0caE01958b5525F1d7feAaCB00
 ```
 
 ## Local Development
@@ -95,7 +95,7 @@ Next.js production build passing
 StudioNet schema verification passing
 ```
 
-The current contract enforces role separation: the steward cannot open requester cases, and only the steward can settle witnessed, unclear, or contradicted cases.
+The current contract enforces role separation without creating a settlement bottleneck: the steward cannot open requester cases, while any wallet can execute the final settlement once consensus has made the outcome valid.
 
 ## Demo Data
 
