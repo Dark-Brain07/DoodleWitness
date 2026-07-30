@@ -2,14 +2,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CaseActionButtons, ChallengeForm } from "@/components/write-actions";
 import { TransactionRail } from "@/components/transaction-provider";
-import { getCase } from "@/lib/genlayer/contract";
+import { getCase, getSummary } from "@/lib/genlayer/contract";
 import { displayTime, formatAttoGen, statusTone } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
 export default async function CaseDetail({ params }: { params: Promise<{ caseId: string }> }) {
   const { caseId } = await params;
-  const item = await getCase(caseId);
+  const [item, summary] = await Promise.all([getCase(caseId), getSummary()]);
   if (!item) notFound();
 
   return (
@@ -67,8 +67,8 @@ export default async function CaseDetail({ params }: { params: Promise<{ caseId:
         ) : null}
       </section>
       <aside className="space-y-6">
-        <CaseActionButtons caseId={item.id} status={item.status} />
-        <ChallengeForm caseId={item.id} status={item.status} />
+        <CaseActionButtons caseId={item.id} status={item.status} requester={item.requester} steward={summary.steward} />
+        <ChallengeForm caseId={item.id} status={item.status} requester={item.requester} steward={summary.steward} />
         <TransactionRail />
       </aside>
     </main>

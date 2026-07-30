@@ -22,13 +22,13 @@ The important part is that the contract does not trust the submitter's summary. 
 StudioNet contract:
 
 ```text
-0xcAad40ab40eBCB45144a3940d3880EcD33A746f1
+0x6062404ebB1610B7Bfa0def38239d23053F018C9
 ```
 
 Deployment transaction:
 
 ```text
-0x4eed895a5737031dbc5580eb6fe63de15f58ba83aa6e97d79b8788c23e1e7e9f
+0xe0f373be169967808d3501779550c2a340a0cc7739e86d6dac7235a7a9f03acc
 ```
 
 Main methods:
@@ -49,12 +49,12 @@ Main methods:
 
 ## App Flow
 
-1. Connect or generate a wallet.
+1. Connect a requester wallet.
 2. Open a case with a public URL, precise claim, context, and bond.
 3. Run witness review. GenLayer validators fetch the source and agree on the result.
-4. If the result is wrong or incomplete, open a challenge with another public URL.
+4. If the result is wrong or incomplete, open a challenge with the requester or steward wallet.
 5. Run challenge review. The contract re-evaluates the case with both sources.
-6. Settle the bond by release, refund, or steward forfeiture.
+6. Switch to the steward wallet for settlement: release, refund, or forfeit.
 
 ## Environment
 
@@ -63,7 +63,7 @@ Create `.env.local`:
 ```bash
 NEXT_PUBLIC_GENLAYER_CHAIN=studionet
 NEXT_PUBLIC_GENLAYER_ENDPOINT=https://studio.genlayer.com/api
-NEXT_PUBLIC_WEBWITNESS_CONTRACT=0xcAad40ab40eBCB45144a3940d3880EcD33A746f1
+NEXT_PUBLIC_WEBWITNESS_CONTRACT=0x6062404ebB1610B7Bfa0def38239d23053F018C9
 ```
 
 ## Local Development
@@ -89,21 +89,13 @@ npm run verify:schema
 Current local verification:
 
 ```text
-26 direct contract tests passing
+29 direct contract tests passing
 Next.js lint passing
 Next.js production build passing
 StudioNet schema verification passing
 ```
 
-Final StudioNet exercise transaction path:
-
-| Step | Transaction |
-| --- | --- |
-| `open_case` | `0x0fdec7a5234388abee42916a1f9e6cac592f5fa56b9df4a383f15705ed36259a` |
-| `witness_case` | `0xd22c4685da17a65fdc57e104b958034be605966855c42f76c8f9ea92de92ce3a` |
-| `open_challenge` | `0x18550bf0be745f9aaaddc016613a49e069be6fffbc4d24f09770c55646b535b8` |
-| `review_challenge` | `0xc77443e8d2a4ee0c13a42cf91fe58b1eccc98b30daa9a72cdfededc41e569528` |
-| `release_bond` | `0x2ffe463f31b6bf93442e8f1e99d58a905db9b321fa952946073a1d5a91f5e7a2` |
+The current contract enforces role separation: the steward cannot open requester cases, and only the steward can settle witnessed, unclear, or contradicted cases.
 
 ## Demo Data
 

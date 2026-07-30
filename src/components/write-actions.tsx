@@ -41,6 +41,9 @@ export function CaseForm() {
 
   return (
     <form onSubmit={submit} className="panel p-6">
+      <p className="mb-5 border border-blue-500/40 bg-blue-500/10 p-3 text-sm text-blue-100">
+        Use a requester wallet here, not the steward wallet. The steward settles witnessed, unclear, or contradicted cases after review.
+      </p>
       <div className="grid gap-4">
         <Field label="Case ID" value={state.id} onChange={(id) => setState({ ...state, id })} placeholder="xz-backdoor-disclosure" />
         <Field label="Public URL" value={state.url} onChange={(url) => setState({ ...state, url })} placeholder="https://..." />
@@ -54,10 +57,12 @@ export function CaseForm() {
   );
 }
 
-export function CaseActionButtons({ caseId, status }: { caseId: string; status: string }) {
+export function CaseActionButtons({ caseId, status, requester, steward }: { caseId: string; status: string; requester: string; steward: string }) {
   const wallet = useWallet();
   const txs = useTransactions();
   const [message, setMessage] = useState("");
+  const connected = wallet.address?.toLowerCase();
+  const isSteward = Boolean(connected && connected === steward.toLowerCase());
 
   async function run(functionName: "witness_case" | "review_challenge" | "release_bond" | "refund_unclear" | "forfeit_false_case") {
     try {
@@ -77,25 +82,35 @@ export function CaseActionButtons({ caseId, status }: { caseId: string; status: 
   return (
     <div className="panel p-5">
       <div className="label">Actions</div>
+      <p className="mt-3 text-xs leading-5 text-muted">
+        Requester: {requester}. Steward: {steward}. Settlement buttons are steward-only by contract.
+      </p>
       <div className="mt-4 flex flex-wrap gap-3">
         {(status === "OPEN" || status === "UNCLEAR") ? <button className="btn-primary" onClick={() => run("witness_case")}>Witness by Consensus</button> : null}
         {status === "CHALLENGED" ? <button className="btn-primary" onClick={() => run("review_challenge")}>Review Challenge</button> : null}
-        {status === "WITNESSED" ? <button className="btn-secondary" onClick={() => run("release_bond")}>Release Bond</button> : null}
-        {status === "UNCLEAR" ? <button className="btn-secondary" onClick={() => run("refund_unclear")}>Refund Unclear</button> : null}
-        {status === "CONTRADICTED" ? <button className="btn-secondary" onClick={() => run("forfeit_false_case")}>Forfeit False Case</button> : null}
+        {status === "WITNESSED" && isSteward ? <button className="btn-secondary" onClick={() => run("release_bond")}>Release Bond</button> : null}
+        {status === "UNCLEAR" && isSteward ? <button className="btn-secondary" onClick={() => run("refund_unclear")}>Refund Unclear</button> : null}
+        {status === "CONTRADICTED" && isSteward ? <button className="btn-secondary" onClick={() => run("forfeit_false_case")}>Forfeit False Case</button> : null}
       </div>
+      {(status === "WITNESSED" || status === "UNCLEAR" || status === "CONTRADICTED") && !isSteward ? (
+        <p className="mt-4 border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-100">
+          Switch to the steward wallet to settle this case.
+        </p>
+      ) : null}
       {message ? <p className="mt-4 text-sm text-gray-300" aria-live="polite">{message}</p> : null}
     </div>
   );
 }
 
-export function ChallengeForm({ caseId, status }: { caseId: string; status: string }) {
+export function ChallengeForm({ caseId, status, requester, steward }: { caseId: string; status: string; requester: string; steward: string }) {
   const wallet = useWallet();
   const txs = useTransactions();
   const [state, setState] = useState({ url: "", summary: "" });
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const canChallenge = status === "WITNESSED" || status === "CONTRADICTED" || status === "UNCLEAR";
+  const connected = wallet.address?.toLowerCase();
+  const canConnectedChallenge = Boolean(connected && (connected === requester.toLowerCase() || connected === steward.toLowerCase()));
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -125,7 +140,12 @@ export function ChallengeForm({ caseId, status }: { caseId: string; status: stri
         <Field label="Challenge URL" value={state.url} onChange={(url) => setState({ ...state, url })} placeholder="https://..." />
         <Area label="Challenge Summary" value={state.summary} onChange={(summary) => setState({ ...state, summary })} />
       </div>
-      <button className="btn-secondary mt-5" disabled={busy}>{busy ? "Submitting..." : "Open Challenge"}</button>
+      {!canConnectedChallenge ? (
+        <p className="mt-4 border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-100">
+          Switch to the requester or steward wallet to open a challenge.
+        </p>
+      ) : null}
+      <button className="btn-secondary mt-5" disabled={busy || !canConnectedChallenge}>{busy ? "Submitting..." : "Open Challenge"}</button>
       {message ? <p className="mt-4 text-sm text-gray-300" aria-live="polite">{message}</p> : null}
     </form>
   );

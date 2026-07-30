@@ -53,6 +53,19 @@ def test_open_case_rejects_short_claim(contract, direct_vm, direct_alice):
         contract.open_case("case-alpha", "https://example.com/evidence", "too short", "y" * 40)
 
 
+def test_steward_cannot_open_requester_case(contract, direct_vm):
+    direct_vm.sender = contract.steward
+    direct_vm.value = GEN
+    with direct_vm.expect_revert("Steward cannot open"):
+        contract.open_case(
+            "case-alpha",
+            "https://example.com/evidence",
+            "The public advisory states that a supply-chain backdoor was disclosed in the referenced open-source project.",
+            "The requester needs a bonded witness certificate for a public incident timeline and maintainer training record.",
+        )
+    direct_vm.value = 0
+
+
 def test_profile_records_opened_case(contract, direct_vm, direct_alice):
     open_case(contract, direct_vm, direct_alice, value=3 * GEN)
     profile = contract.get_profile(direct_alice)
@@ -175,7 +188,17 @@ def test_review_challenge_does_not_double_count_witnessed(contract, direct_vm, d
 
 def test_release_requires_witnessed(contract, direct_vm, direct_alice):
     cid = open_case(contract, direct_vm, direct_alice)
+    direct_vm.sender = contract.steward
     with direct_vm.expect_revert("not witnessed"):
+        contract.release_bond(cid)
+
+
+def test_requester_cannot_release_bond(contract, direct_vm, direct_alice):
+    cid = open_case(contract, direct_vm, direct_alice, value=2 * GEN)
+    mock_witness(direct_vm, "WITNESSED", "HIGH")
+    contract.witness_case(cid)
+    direct_vm.sender = direct_alice
+    with direct_vm.expect_revert("Only steward"):
         contract.release_bond(cid)
 
 
@@ -183,6 +206,7 @@ def test_release_bond_returns_to_requester(contract, direct_vm, direct_alice):
     cid = open_case(contract, direct_vm, direct_alice, value=2 * GEN)
     mock_witness(direct_vm, "WITNESSED", "HIGH")
     contract.witness_case(cid)
+    direct_vm.sender = contract.steward
     contract.release_bond(cid)
     item = contract.get_case(cid)
     assert item["status"] == "RELEASED"
@@ -192,7 +216,17 @@ def test_release_bond_returns_to_requester(contract, direct_vm, direct_alice):
 
 def test_refund_requires_unclear(contract, direct_vm, direct_alice):
     cid = open_case(contract, direct_vm, direct_alice)
+    direct_vm.sender = contract.steward
     with direct_vm.expect_revert("not unclear"):
+        contract.refund_unclear(cid)
+
+
+def test_requester_cannot_refund_unclear(contract, direct_vm, direct_alice):
+    cid = open_case(contract, direct_vm, direct_alice, value=2 * GEN)
+    mock_witness(direct_vm, "UNCLEAR", "UNKNOWN")
+    contract.witness_case(cid)
+    direct_vm.sender = direct_alice
+    with direct_vm.expect_revert("Only steward"):
         contract.refund_unclear(cid)
 
 
@@ -200,6 +234,7 @@ def test_refund_unclear_returns_to_requester(contract, direct_vm, direct_alice):
     cid = open_case(contract, direct_vm, direct_alice, value=2 * GEN)
     mock_witness(direct_vm, "UNCLEAR", "UNKNOWN")
     contract.witness_case(cid)
+    direct_vm.sender = contract.steward
     contract.refund_unclear(cid)
     assert contract.get_case(cid)["status"] == "REFUNDED"
 
@@ -226,6 +261,7 @@ def test_profile_tracks_witnessed_and_released(contract, direct_vm, direct_alice
     cid = open_case(contract, direct_vm, direct_alice, value=2 * GEN)
     mock_witness(direct_vm, "WITNESSED", "HIGH")
     contract.witness_case(cid)
+    direct_vm.sender = contract.steward
     contract.release_bond(cid)
     profile = contract.get_profile(direct_alice)
     assert profile["witnessed_count"] == "1"

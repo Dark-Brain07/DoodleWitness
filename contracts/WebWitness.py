@@ -82,6 +82,8 @@ class WebWitness(gl.Contract):
             raise gl.vm.UserError(f"{ERROR_EXPECTED} Case already exists")
         if gl.message.value == u256(0):
             raise gl.vm.UserError(f"{ERROR_EXPECTED} Case must include a witness bond")
+        if gl.message.sender_address == self.steward:
+            raise gl.vm.UserError(f"{ERROR_EXPECTED} Steward cannot open requester case")
 
         self.cases[case_id] = WitnessCase(
             id=case_id,
@@ -144,8 +146,8 @@ class WebWitness(gl.Contract):
     @gl.public.write
     def release_bond(self, case_id: str) -> None:
         case = self._require_case(case_id)
-        if gl.message.sender_address != case.requester and gl.message.sender_address != self.steward:
-            raise gl.vm.UserError(f"{ERROR_EXPECTED} Only requester or steward can release")
+        if gl.message.sender_address != self.steward:
+            raise gl.vm.UserError(f"{ERROR_EXPECTED} Only steward can release")
         if case.status != STATUS_WITNESSED:
             raise gl.vm.UserError(f"{ERROR_EXPECTED} Case is not witnessed")
         amount = case.bond
@@ -163,8 +165,8 @@ class WebWitness(gl.Contract):
     @gl.public.write
     def refund_unclear(self, case_id: str) -> None:
         case = self._require_case(case_id)
-        if gl.message.sender_address != case.requester and gl.message.sender_address != self.steward:
-            raise gl.vm.UserError(f"{ERROR_EXPECTED} Only requester or steward can refund")
+        if gl.message.sender_address != self.steward:
+            raise gl.vm.UserError(f"{ERROR_EXPECTED} Only steward can refund")
         if case.status != STATUS_UNCLEAR:
             raise gl.vm.UserError(f"{ERROR_EXPECTED} Case is not unclear")
         amount = case.bond
