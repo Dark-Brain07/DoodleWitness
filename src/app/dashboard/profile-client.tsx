@@ -68,7 +68,7 @@ export function DashboardClient() {
         </button>
       </div>
 
-      {error ? <div className="mt-6 panel border-red-500/60 bg-red-950/30 p-4 text-sm text-red-100">{error}</div> : null}
+      {error ? <div className="callout callout-bad mt-6" role="alert">{error}</div> : null}
 
       <section className="mt-8 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
         <Stat label="Cases" value={profile?.case_count ?? "0"} />
@@ -113,7 +113,7 @@ function CaseSection({ title, icon, cases }: { title: string; icon: React.ReactN
         <div className="label text-brand">{title}</div>
       </div>
       <div className="mt-4 grid gap-3">
-        {cases.length === 0 ? <Empty text="No cases in this section." /> : cases.map((item) => (
+        {cases.length === 0 ? <Empty text="No cases in this section yet." /> : cases.map((item) => (
           <Link key={item.id} href={`/cases/${item.id}`} className="block panel-soft p-4 hover:bg-panel-soft">
             <div className="flex items-center justify-between gap-3">
               <span className="label">{item.id}</span>

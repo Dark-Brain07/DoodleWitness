@@ -17,9 +17,9 @@ export default async function CaseDetail({ params }: { params: Promise<{ caseId:
       <section>
         <Link href="/cases" className="btn-secondary">Back to cases</Link>
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <span className="label">{item.id}</span>
-          <span className={`pill ${statusTone(item.status)}`}>{item.status}</span>
-          <span className={`pill ${statusTone(item.verdict)}`}>{item.verdict}</span>
+          <span className="docket-number">{item.id}</span>
+          <span className={`stamp ${statusTone(item.status)}`}>{item.status}</span>
+          <span className={`stamp ${statusTone(item.verdict)}`}>{item.verdict}</span>
         </div>
         <h1 className="section-title mt-3">{item.claim}</h1>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
