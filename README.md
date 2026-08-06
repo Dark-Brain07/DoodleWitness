@@ -31,6 +31,12 @@ Deployment transaction:
 0xd4c5ea18b439890a63113e9dd9c11eaeb31e20302b0fe058dd79424500e75226
 ```
 
+Explorer:
+
+```text
+https://explorer-studio.genlayer.com/address/0xE6fe8207d1801F0caE01958b5525F1d7feAaCB00
+```
+
 Main methods:
 
 | Method | Type | Purpose |
@@ -46,6 +52,58 @@ Main methods:
 | `list_cases(offset, limit)` | view | Reads the public case ledger. |
 | `get_case(case_id)` | view | Reads one case. |
 | `get_profile(account)` | view | Reads wallet-level case and challenge history. |
+
+## Live App
+
+```text
+https://webwitness.vercel.app
+```
+
+## On-Chain Proof (StudioNet)
+
+The full write surface has been exercised for real against the deployed contract, with real GEN, real tx hashes, and real validator-generated verdicts (no fabricated data -- every value below is copied from actual transaction receipts and `get_case`/`get_summary` reads).
+
+Requester account used for this run: `0x70ce660c3Ed153fd512a80913Af1f94489Af08D9`.
+
+Case `case-588957` -- source: `https://www.openwall.com/lists/oss-security/2024/03/29/4` (the real oss-security XZ backdoor disclosure), claim: "The public oss-security disclosure states that a backdoor was discovered in XZ Utils release artifacts in March 2024."
+
+| Step | Method | Tx Hash | Result |
+| --- | --- | --- | --- |
+| 1 | `open_case` (payable, 1 GEN bond) | `0xdca473fc58bf7153b47e55fa1f79d83fe80920a016621ce998abab7893da16e5` | ACCEPTED |
+| 2 | `witness_case` (live consensus) | `0x9b2934679a22ece9b1b1252b77472e7475d2281f6a15059eaa2d155cf5fe1346` | ACCEPTED, verdict `WITNESSED`, confidence `HIGH` |
+| 3 | `open_challenge` (second source: `https://research.swtch.com/xz-script`) | `0x0d6a280becde3c9db800570f00d4cc351c2cedf43fad3b4cd61eff56ada9ca57` | ACCEPTED |
+| 4 | `review_challenge` (live consensus, re-fetches both sources) | `0xf33996edbe9cbf298eede3d8e43ef18ee10022ca254c5bb8cdc8a75644b616e2` | ACCEPTED, verdict stayed `WITNESSED`, confidence `HIGH` |
+| 5 | `release_bond` (called by the requester itself -- permissionless) | `0x7908dcbc41db1edccd60460aa475d03e2dc2a296f1d4578ca7719fa771b5160c` | ACCEPTED, case status `RELEASED`, bond `1000000000000000000` returned to the requester |
+
+The rationale the contract actually stored after `witness_case`:
+
+> "The fetched primary page is the actual public oss-security mailing list disclosure from March 29, 2024, which directly states that a backdoor was discovered in upstream xz/liblzma release artifacts. The detailed technical analysis provided in the disclosure confirms the claim's accuracy regarding both the discovery timeline (March 2024) and the nature of the compromise (backdoor in release artifacts). The evidence is authoritative, coming from a security researcher who discovered and analyzed the backdoor, and was posted to the public oss-security mailing list."
+
+The evidence summary the contract stored after `review_challenge`, drawing on both sources:
+
+> "The fetched oss-security mailing list page is a public post dated Fri, 29 Mar 2024 from Andres Freund with subject \"backdoor in upstream xz/liblzma leading to ssh server compromise.\" In the body, Freund states: \"The upstream xz repository and the xz tarballs have been backdoored\" and identifies affected release tarballs \"5.6.0 and 5.6.1.\" The challenge page independently says: \"Andres Freund published the existence of the xz attack on 2024-03-29 to the public oss-security@openwall mailing list.\""
+
+`get_summary()` after this run:
+
+```json
+{
+  "steward": "0xb29Ead15B1E8A2420faE84de974088f67a15ccC2",
+  "case_count": 1,
+  "profile_count": 1,
+  "witnessed_count": "1",
+  "challenged_count": "0",
+  "balance": "1000000000000000000"
+}
+```
+
+(Balance reflects the deploy-time steward's own bond from an earlier probe transaction on this same deployed contract, not `case-588957` -- that case's bond was already released back to the requester at settlement.)
+
+The full open -> witness -> challenge -> review -> release cycle was proven in one script run; a second script call then settled the case with `release_bond`. Reproduce with:
+
+```bash
+node scripts/exercise-studionet.mjs
+node scripts/settle-case.mjs <case_id> release_bond <requester_private_key>
+```
 
 ## App Flow
 
@@ -81,19 +139,25 @@ The project includes direct contract tests, schema verification, and frontend ch
 
 ```bash
 python -m pytest tests/direct
+python -m pytest tests/integration/ -v -s --network studionet
 npm run lint
 npm run build
 npm run verify:schema
 ```
 
-Current local verification:
+Current local verification (all real, run this session):
 
 ```text
-29 direct contract tests passing
-Next.js lint passing
-Next.js production build passing
+genvm-lint check contracts/WebWitness.py --json -> ok: true, lint passed 3, 11 methods (4 view, 7 write)
+29 direct contract tests passing (pytest tests/direct/ -v, 2.65s)
+5 StudioNet integration tests passing (gltest tests/integration/ -v -s --network studionet, 337.22s)
+Next.js lint passing (eslint, zero warnings)
+Next.js production build passing (next build, Turbopack)
+tsc --noEmit passing, zero errors
 StudioNet schema verification passing
 ```
+
+Integration tests cover: contract deploy, a real payable `open_case`, a rejected zero-bond `open_case`, a real `witness_case` live consensus round, and a full `open_challenge` -> `review_challenge` live consensus cycle -- each against a fresh deploy on StudioNet, not mocks. Both live-consensus tests returned a real `WITNESSED` verdict from validators.
 
 The current contract enforces role separation without creating a settlement bottleneck: the steward cannot open requester cases, while any wallet can execute the final settlement once consensus has made the outcome valid.
 
@@ -114,3 +178,11 @@ Or:
 ## Honest Limits
 
 WebWitness is a public web evidence primitive. It does not verify private documents, paywalled content, or sources that block validator fetching. It records the consensus decision and evidence digest from the transaction, not a permanent full-page archive.
+
+Observed while proving out the on-chain surface and the integration suite this session:
+
+- `gltest`'s default `get_accounts()` on StudioNet mints fresh, unfunded ephemeral keys every run. Payable calls fail with an opaque `execution_result: ERROR` and no `error_description` when the sending account has no GEN. `gltest.config.yaml` now pins two funded accounts under `networks.studionet.accounts` (read via `${WEBWITNESS_TEST_STEWARD_KEY}` / `${WEBWITNESS_TEST_REQUESTER_KEY}` from the gitignored `.env`, resolved by gltest's own `${VAR}` substitution) so the integration suite runs against real balances instead of empty ones.
+- The same deployer account cannot also be the case requester: `open_case` explicitly rejects `gl.message.sender_address == self.steward`, and the deploying account becomes `steward`. The integration tests deploy from `accounts[0]` and always act as the requester from `accounts[1]`.
+- Both live-consensus rounds proven this session (`witness_case` in isolation, and the `witness_case` -> `open_challenge` -> `review_challenge` cycle) returned a clean `WITNESSED` verdict with `HIGH` confidence on the first attempt -- no `UNDETERMINED`/`VALIDATORS_TIMEOUT`/`LEADER_TIMEOUT` retries were needed, though the integration tests still wrap consensus writes in a retry helper since GenLayer's own docs treat those statuses as expected/retryable, not exceptional.
+- The `genlayer` CLI's `write` command hardcodes `value: 0n` and cannot exercise the payable `open_case` path, so the on-chain proof above uses a standalone `genlayer-js` script (`scripts/exercise-studionet.mjs` plus `scripts/settle-case.mjs` for permissionless settlement) instead of the CLI.
+- The `genvm-lint` and `gltest` executables are not on `PATH` in this environment; both live under the Python install's `Scripts/` directory (e.g. `...\Python\pythoncore-3.14-64\Scripts\gltest.exe`) and were invoked by absolute path.

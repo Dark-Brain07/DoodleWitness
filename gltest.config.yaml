@@ -1,6 +1,9 @@
 networks:
   default: studionet
-  studionet: {}
+  studionet:
+    accounts:
+      - "${WEBWITNESS_TEST_STEWARD_KEY}"
+      - "${WEBWITNESS_TEST_REQUESTER_KEY}"
   localnet: {}
 paths:
   contracts: contracts
