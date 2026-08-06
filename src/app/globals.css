@@ -198,6 +198,90 @@ button, a, input, textarea, select { outline-color: var(--focus); }
 
 .callout-info { border-color: rgba(79, 216, 196, 0.4); background: rgba(79, 216, 196, 0.08); color: #cdece4; }
 .callout-warn { border-color: rgba(217, 164, 65, 0.4); background: rgba(217, 164, 65, 0.08); color: #f0dcb0; }
+
+/*
+  Case-docket components. WebWitness's own visual identity: an evidence
+  desk, not a dashboard. Cases read as docket entries with a stamped
+  docket number; verdicts read as ink stamps, not soft status pills.
+  Additive only -- .pill and .tone-* are untouched and still used
+  everywhere statusTone() already returns them, so no logic changed.
+*/
+
+.docket-number {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  border-radius: 0.3rem;
+  padding: 0.15rem 0.4rem;
+  display: inline-block;
+}
+
+.docket-entry {
+  position: relative;
+  border: 1px solid var(--line);
+  background: rgba(16, 32, 29, 0.55);
+  border-radius: 0.5rem;
+  border-left: 3px solid var(--line-soft);
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.docket-entry:hover,
+.docket-entry:focus-within {
+  border-left-color: var(--brand);
+  background: rgba(22, 48, 43, 0.72);
+}
+
+.stamp {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 2px solid currentColor;
+  border-radius: 0.2rem;
+  padding: 0.2rem 0.55rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+}
+
+.stamp::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1px solid currentColor;
+  border-radius: 0.1rem;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.register-strip {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.register-item {
+  flex: 1 1 8rem;
+  padding: 0.75rem 1rem;
+  border-right: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+}
+
+.register-item:first-child,
+.register-item:nth-child(3n + 1) {
+  border-top: none;
+}
+
+@media (min-width: 640px) {
+  .register-item { border-top: none; }
+}
 .callout-bad { border-color: rgba(224, 122, 107, 0.45); background: rgba(224, 122, 107, 0.1); color: #f5c7bf; }
 
 .skeleton {
