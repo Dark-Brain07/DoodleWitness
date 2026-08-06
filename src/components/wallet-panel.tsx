@@ -34,11 +34,16 @@ export function WalletPanel() {
 
   return (
     <div className="relative">
-      <button className="btn-primary px-3 py-2 text-xs" onClick={() => setOpen((value) => !value)}>
+      <button
+        className="btn-primary px-3 py-2 text-xs"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        aria-haspopup="dialog"
+      >
         <KeyRound size={14} /> {wallet.mode === "none" ? "Connect Wallet" : shortenAddress(wallet.address)}
       </button>
       {open ? (
-        <div className="panel absolute right-0 z-20 mt-3 w-80 p-4 shadow-xl">
+        <div className="panel absolute right-0 z-20 mt-3 w-80 p-4 shadow-xl shadow-black/40" role="dialog" aria-label="Wallet identity">
           <div className="label">Active Identity</div>
           <div className="mono mt-1 break-all text-sm text-text">{wallet.address ?? "Read-only visitor"}</div>
           <div className="mt-4 grid gap-2">
@@ -49,7 +54,7 @@ export function WalletPanel() {
               <button className="btn-secondary justify-center" onClick={disconnect}><LogOut size={14} /> Disconnect wallet</button>
             ) : null}
           </div>
-          <div className="mt-4 border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-100">
+          <div className="callout callout-warn mt-4">
             Browser wallet is recommended for StudioNet writes. Injected wallets may reject GenLayer RPC calls. Export the browser key before relying on it.
           </div>
           <label className="label mt-4 block" htmlFor="import-key">Import browser key</label>

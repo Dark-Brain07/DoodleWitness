@@ -73,7 +73,7 @@ export function CaseForm() {
       >
         Use demo data
       </button>
-      <p className="mb-5 border border-blue-500/40 bg-blue-500/10 p-3 text-sm text-blue-100">
+      <p className="callout callout-info mb-5 text-sm">
         Use a requester wallet here, not the steward wallet. After consensus, settlement is callable by anyone and paid to the contract-selected recipient.
       </p>
       <div className="grid gap-4">
@@ -83,8 +83,8 @@ export function CaseForm() {
         <Area label="Context" value={state.context} onChange={(context) => setState({ ...state, context })} />
         <Field label="Witness Bond (GEN)" value={state.bond} onChange={(bond) => setState({ ...state, bond })} />
       </div>
-      {message ? <p className="mt-4 border border-red-500/50 bg-red-950/30 p-3 text-sm text-red-100">{message}</p> : null}
-      <button className="btn-primary mt-6" disabled={busy}>{busy ? "Opening..." : "Open Witness Case"}</button>
+      {message ? <p className="callout callout-bad mt-4 text-sm" role="alert">{message}</p> : null}
+      <button className="btn-primary mt-6" disabled={busy} aria-busy={busy}>{busy ? "Opening case..." : "Open Witness Case"}</button>
     </form>
   );
 }
@@ -173,11 +173,11 @@ export function ChallengeForm({ caseId, status, requester, steward }: { caseId: 
         <Area label="Challenge Summary" value={state.summary} onChange={(summary) => setState({ ...state, summary })} />
       </div>
       {!canConnectedChallenge ? (
-        <p className="mt-4 border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-100">
+        <p className="callout callout-warn mt-4">
           Switch to the requester or steward wallet to open a challenge.
         </p>
       ) : null}
-      <button className="btn-secondary mt-5" disabled={busy || !canConnectedChallenge}>{busy ? "Submitting..." : "Open Challenge"}</button>
+      <button className="btn-secondary mt-5" disabled={busy || !canConnectedChallenge} aria-busy={busy}>{busy ? "Submitting..." : "Open Challenge"}</button>
       {message ? <p className="mt-4 text-sm text-gray-300" aria-live="polite">{message}</p> : null}
     </form>
   );
