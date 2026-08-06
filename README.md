@@ -105,6 +105,33 @@ node scripts/exercise-studionet.mjs
 node scripts/settle-case.mjs <case_id> release_bond <requester_private_key>
 ```
 
+### The other settlement branch: `CONTRADICTED` -> `forfeit_false_case`
+
+The run above only proved the `WITNESSED` path. To prove the contract actually reaches a different verdict and a different settlement destination when the evidence disagrees with the claim -- not just when it happens to agree -- a second case was opened against the same real disclosure page, with a claim the page directly refutes: "The public oss-security disclosure states that no security vulnerabilities of any kind were ever found in XZ Utils, and the project has a clean, incident-free security history."
+
+Case `case-911948` -- same source (`https://www.openwall.com/lists/oss-security/2024/03/29/4`), a claim it contradicts:
+
+| Step | Method | Tx Hash | Result |
+| --- | --- | --- | --- |
+| 1 | `open_case` (payable, 1 GEN bond) | `0xd43b6e9fcd4708906ab182e1cecc30da4ddd96b119c7b931056182288f5916fe` | ACCEPTED |
+| 2 | `witness_case` (live consensus) | `0x81cee99271e039bf2c1c92306ecfa882061dc88f733b8c6afb2e02c0b3ac4f4c` | ACCEPTED, verdict `CONTRADICTED` |
+| 3 | `open_challenge` (second source: `https://research.swtch.com/xz-script`) | `0xe57a153d4fc7dc7a6c56410daf834402630c1fd81f7d5adadaae6c5d2eb9b334` | ACCEPTED |
+| 4 | `review_challenge` (live consensus, re-fetches both sources) | `0x3864091c3045d483915a7c87703da3ff9c6fe6c76c97bae4b73bcb1fe6691293` | ACCEPTED, verdict stayed `CONTRADICTED` |
+| 5 | `forfeit_false_case` (permissionless) | `0x3728ca9c8f0fefafed84ab724a1ecc2eb0ad3e31827773338547a7a04d75923d` | ACCEPTED, case status `FORFEITED`, bond sent to the steward, not back to the requester |
+
+Confirmed independently on the public explorer: the `forfeit_false_case` transaction is followed by a separate `Send` (`0xe73fa4199...930a5a97`) moving `1000000000000000000` wei **out of the contract to the steward address**, not the requester -- proving the bond actually moved to the correct destination for this branch, not just that a status string changed. `get_summary()` after both cases:
+
+```json
+{
+  "case_count": 2,
+  "witnessed_count": "1",
+  "challenged_count": "0",
+  "balance": "0"
+}
+```
+
+Both settlement branches are now proven on-chain with real GEN, on the same deployed contract: agreement (`WITNESSED` -> `release_bond`, case `case-588957`) and disagreement (`CONTRADICTED` -> `forfeit_false_case`, case `case-911948`). `UNCLEAR` -> `refund_unclear` is covered by the 29 direct tests but has not been separately proven on-chain, since the tests above were purpose-built to lean the verdict one way and a live `UNCLEAR` outcome, honestly, has not yet come up.
+
 ## App Flow
 
 1. Connect a requester wallet.
