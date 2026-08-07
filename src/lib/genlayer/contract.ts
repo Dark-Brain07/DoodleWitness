@@ -106,5 +106,26 @@ export async function waitAccepted(client: Client, hash: TransactionHash) {
   if (result && result !== "SUCCESS") {
     throw new Error(`GenLayer contract execution failed (${result}). Transaction: ${hash}`);
   }
+
+  // The SDK's own wait can resolve on a transient/stale status read (e.g. UNDETERMINED)
+  // moments before the network actually settles the same transaction to FINALIZED --
+  // observed directly against StudioNet: a witness_case round reported UNDETERMINED by
+  // waitForTransactionReceipt, while the contract had already stored a real WITNESSED
+  // verdict and the transaction's own receipt was FINALIZED on re-read. Trust the fresh
+  // `finalized` read over the wait's own receipt, and give a genuinely unsettled result a
+  // short second look before accepting it as final, so the UI never reports "nothing was
+  // written, retry" for a write that actually succeeded.
+  if (finalized?.statusName === TransactionStatus.FINALIZED && receipt.statusName !== TransactionStatus.FINALIZED) {
+    return { ...receipt, statusName: finalized.statusName };
+  }
+  if (receipt.statusName !== TransactionStatus.FINALIZED) {
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      const recheck = await client.getTransaction({ hash });
+      if (recheck?.statusName === TransactionStatus.FINALIZED) {
+        return { ...receipt, statusName: recheck.statusName };
+      }
+    }
+  }
   return receipt;
 }
