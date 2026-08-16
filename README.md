@@ -28,7 +28,7 @@ StudioNet contract:
 Deployment transaction:
 
 ```text
-0xd4c5ea18b439890a63113e9dd9c11eaeb31e20302b0fe058dd79424500e75226
+0x18352b9fa21ac3852526d468e37c33054abd358eb53fa0dd3ccdd9c9661c6407
 ```
 
 Explorer:
