@@ -33,16 +33,16 @@ export default async function CaseDetail({ params }: { params: Promise<{ caseId:
         </div>
         <div className="panel mt-6 p-5">
           <div className="label">Requester Context</div>
-          <p className="mt-3 leading-7 text-gray-300">{item.context}</p>
+          <p className="mt-3 leading-7 text-muted">{item.context}</p>
         </div>
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           <div className="panel p-5">
             <div className="label">Evidence Summary</div>
-            <p className="mt-3 text-sm leading-7 text-gray-300">{item.evidence_summary || "Consensus has not stored evidence notes yet."}</p>
+            <p className="mt-3 text-sm leading-7 text-muted">{item.evidence_summary || "Consensus has not stored evidence notes yet."}</p>
           </div>
           <div className="panel p-5">
             <div className="label">Rationale</div>
-            <p className="mt-3 text-sm leading-7 text-gray-300">{item.rationale || "Run witness consensus to store a validator-backed rationale."}</p>
+            <p className="mt-3 text-sm leading-7 text-muted">{item.rationale || "Run witness consensus to store a validator-backed rationale."}</p>
           </div>
         </div>
         {item.snapshot_digest ? (
@@ -55,7 +55,7 @@ export default async function CaseDetail({ params }: { params: Promise<{ caseId:
           <div className="panel mt-6 p-5">
             <div className="label">Challenge Evidence</div>
             <a className="mono mt-3 block break-all text-brand underline" href={item.challenge_url} target="_blank" rel="noreferrer">{item.challenge_url}</a>
-            <p className="mt-3 text-sm leading-7 text-gray-300">{item.challenge_summary}</p>
+            <p className="mt-3 text-sm leading-7 text-muted">{item.challenge_summary}</p>
             <p className="mono mt-3 text-xs text-muted">Submitted {displayTime(item.challenged_at)}</p>
           </div>
         ) : null}

@@ -88,7 +88,7 @@ export function DashboardClient() {
           <ShieldCheck size={18} />
           <div className="label text-brand">Why this profile matters</div>
         </div>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-gray-300">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-muted">
           A DoodleWitness profile is not an off-chain account page. It is read from the intelligent contract, so the bond totals, witness results, challenges, and settlements reflect the same state reviewers and counterparties can inspect.
         </p>
       </section>

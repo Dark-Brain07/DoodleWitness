@@ -119,7 +119,7 @@ export function TransactionRail() {
                 {stages.map((stage) => (
                   <div
                     key={stage}
-                    className={`h-1.5 ${stages.indexOf(stage) <= stages.indexOf(tx.status) ? "bg-brand" : "bg-gray-700"}`}
+                    className={`h-1.5 ${stages.indexOf(stage) <= stages.indexOf(tx.status) ? "bg-brand" : "bg-gray-300"}`}
                     title={stage}
                   />
                 ))}

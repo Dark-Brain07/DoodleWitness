@@ -122,7 +122,7 @@ export function CaseActionButtons({ caseId, status, requester, steward }: { case
         {status === "UNCLEAR" ? <button className="btn-secondary" onClick={() => run("refund_unclear")}>Refund Unclear</button> : null}
         {status === "CONTRADICTED" ? <button className="btn-secondary" onClick={() => run("forfeit_false_case")}>Forfeit False Case</button> : null}
       </div>
-      {message ? <p className="mt-4 text-sm text-gray-300" aria-live="polite">{message}</p> : null}
+      {message ? <p className="mt-4 text-sm text-muted" aria-live="polite">{message}</p> : null}
     </div>
   );
 }
@@ -178,7 +178,7 @@ export function ChallengeForm({ caseId, status, requester, steward }: { caseId: 
         </p>
       ) : null}
       <button className="btn-secondary mt-5" disabled={busy || !canConnectedChallenge} aria-busy={busy}>{busy ? "Submitting..." : "Open Challenge"}</button>
-      {message ? <p className="mt-4 text-sm text-gray-300" aria-live="polite">{message}</p> : null}
+      {message ? <p className="mt-4 text-sm text-muted" aria-live="polite">{message}</p> : null}
     </form>
   );
 }

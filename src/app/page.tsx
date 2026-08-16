@@ -66,7 +66,7 @@ export default async function Home() {
             </div>
             <Link href="/cases" className="btn-secondary">View all cases</Link>
           </div>
-          <p className="mt-4 max-w-3xl text-sm leading-6 text-gray-300">
+          <p className="mt-4 max-w-3xl text-sm leading-6 text-muted">
             DoodleWitness does not ask validators to grade a user-written story. Each case points them at public
             image evidence, then the contract stores the resulting verdict, challenge record, and bond settlement path.
           </p>
