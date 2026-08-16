@@ -56,7 +56,7 @@ Main methods:
 ## Live App
 
 ```text
-https://DoodleWitness.vercel.app
+https://doodle-witness.vercel.app/
 ```
 
 
