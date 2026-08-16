@@ -11,7 +11,7 @@ if (existsSync(".env.local")) {
   }
 }
 
-const address = process.env.NEXT_PUBLIC_WEBWITNESS_CONTRACT;
+const address = process.env.NEXT_PUBLIC_DoodleWitness_CONTRACT;
 
 const required = [
   "open_case",
@@ -28,7 +28,7 @@ const required = [
 ];
 
 if (!address) {
-  console.error("NEXT_PUBLIC_WEBWITNESS_CONTRACT is not set.");
+  console.error("NEXT_PUBLIC_DoodleWitness_CONTRACT is not set.");
   process.exit(1);
 }
 

@@ -1,11 +1,9 @@
 @import "tailwindcss";
 
 /*
-  WebWitness art direction: "Notary Ledger"
-  WebWitness notarizes public web evidence on-chain. The palette draws from
-  archival ink and oxidized-copper seals (verdigris) rather than a generic
-  SaaS blue/purple: deep ink-green backgrounds, a verdigris accent for links
-  and primary emphasis, and a warm rust accent reserved for attention states.
+  DoodleWitness art direction: "Notary Ledger"
+  DoodleWitness notarizes public image evidence on-chain. The palette draws from
+  ledger paper, ink stamps, binding tape, and high-contrast institutional type.
   Deliberately distinct from sibling projects' coal/gold and storm/amber palettes.
 */
 
@@ -200,8 +198,8 @@ button, a, input, textarea, select { outline-color: var(--focus); }
 .callout-warn { border-color: rgba(217, 164, 65, 0.4); background: rgba(217, 164, 65, 0.08); color: #f0dcb0; }
 
 /*
-  Case-docket components. WebWitness's own visual identity: an evidence
-  desk, not a dashboard. Cases read as docket entries with a stamped
+  Case-docket components. DoodleWitness's own visual identity: an evidence
+  stamp register strip. not a dashboard. Cases read as docket entries with a stamped
   docket number; verdicts read as ink stamps, not soft status pills.
   Additive only -- .pill and .tone-* are untouched and still used
   everywhere statusTone() already returns them, so no logic changed.

@@ -1,8 +1,8 @@
 import type { StoredTransaction } from "./types";
 
-const TX_KEY = "webwitness.transactions.v1";
-const GENERATED_KEY = "webwitness.generated-wallet.v1";
-const ACK_KEY = "webwitness.generated-wallet-ack.v1";
+const TX_KEY = "doodlewitness.transactions.v1";
+const GENERATED_KEY = "doodlewitness.generated-wallet.v1";
+const ACK_KEY = "doodlewitness.generated-wallet-ack.v1";
 
 export function readTransactions(): StoredTransaction[] {
   if (typeof localStorage === "undefined") return [];

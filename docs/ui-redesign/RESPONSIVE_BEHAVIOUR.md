@@ -1,4 +1,4 @@
-# Responsive Behaviour — WebWitness
+# Responsive Behaviour — DoodleWitness
 
 Breakpoints follow Tailwind defaults already in use in the codebase (`md`
 768px, `lg` 1024px) — no new breakpoint system introduced.
@@ -33,7 +33,7 @@ Breakpoints follow Tailwind defaults already in use in the codebase (`md`
 - Wallet control remains reachable at all widths (it was already visible).
 
 ## Tables / dense data
-WebWitness has no literal `<table>` elements; case listings are card-based,
+DoodleWitness has no literal `<table>` elements; case listings are card-based,
 which already degrades gracefully to mobile without a responsive-table
 pattern being needed.
 

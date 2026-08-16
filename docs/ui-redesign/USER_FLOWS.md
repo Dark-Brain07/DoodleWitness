@@ -1,4 +1,4 @@
-# User Flows — WebWitness
+# User Flows — DoodleWitness
 
 ## Flow 1: Open a witness case
 - **Entry point**: `/`, `/cases`, or nav → "New Case".

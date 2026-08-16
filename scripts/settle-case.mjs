@@ -12,7 +12,7 @@ if (existsSync(".env.local")) {
   }
 }
 
-const address = process.env.NEXT_PUBLIC_WEBWITNESS_CONTRACT;
+const address = process.env.NEXT_PUBLIC_DoodleWitness_CONTRACT;
 const caseId = process.argv[2];
 const method = process.argv[3]; // release_bond | refund_unclear | forfeit_false_case
 const privateKey = process.argv[4];

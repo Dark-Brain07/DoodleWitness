@@ -12,11 +12,11 @@ if (existsSync(".env.local")) {
   }
 }
 
-const address = process.env.NEXT_PUBLIC_WEBWITNESS_CONTRACT;
-if (!address) throw new Error("NEXT_PUBLIC_WEBWITNESS_CONTRACT is not set");
+const address = process.env.NEXT_PUBLIC_DoodleWitness_CONTRACT;
+if (!address) throw new Error("NEXT_PUBLIC_DoodleWitness_CONTRACT is not set");
 
-const requesterPrivateKey = process.env.WEBWITNESS_REQUESTER_PRIVATE_KEY || generatePrivateKey();
-const stewardPrivateKey = process.env.WEBWITNESS_STEWARD_PRIVATE_KEY;
+const requesterPrivateKey = process.env.DoodleWitness_REQUESTER_PRIVATE_KEY || generatePrivateKey();
+const stewardPrivateKey = process.env.DoodleWitness_STEWARD_PRIVATE_KEY;
 const requester = createAccount(requesterPrivateKey);
 const steward = stewardPrivateKey ? createAccount(stewardPrivateKey) : null;
 const requesterClient = createClient({
@@ -37,7 +37,7 @@ const transactions = [];
 console.log(`Requester account: ${requester.address}`);
 console.log(`Requester private key for reproduction: ${requesterPrivateKey}`);
 if (steward) console.log(`Steward account: ${steward.address}`);
-else console.log("WEBWITNESS_STEWARD_PRIVATE_KEY not set; steward-only settlement will be skipped.");
+else console.log("DoodleWitness_STEWARD_PRIVATE_KEY not set; steward-only settlement will be skipped.");
 console.log(`Contract: ${address}`);
 
 async function write(client, label, functionName, args, value = 0n, status = TransactionStatus.ACCEPTED) {
@@ -59,7 +59,7 @@ await write(requesterClient, "open_case", "open_case", [
   caseId,
   "https://www.openwall.com/lists/oss-security/2024/03/29/4",
   "The public oss-security disclosure states that a backdoor was discovered in XZ Utils release artifacts in March 2024.",
-  "WebWitness is recording a public evidence certificate for a security timeline and maintainer education artifact.",
+  "DoodleWitness is recording a public evidence certificate for a security timeline and maintainer education artifact.",
 ], 1_000_000_000_000_000_000n);
 
 await write(requesterClient, "witness_case", "witness_case", [caseId], 0n, TransactionStatus.ACCEPTED);

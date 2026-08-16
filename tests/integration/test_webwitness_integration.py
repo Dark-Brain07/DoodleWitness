@@ -1,4 +1,4 @@
-"""StudioNet integration tests for WebWitness.
+"""StudioNet integration tests for DoodleWitness.
 
 Run with:
     python -m pytest tests/integration/ -v -s --network studionet
@@ -43,7 +43,7 @@ def _deploy():
     """Deploy from accounts[0] (the steward). Requester actions must use a different
     account -- the contract forbids the steward from opening its own case."""
     accounts = get_accounts()
-    factory = get_contract_factory("WebWitness")
+    factory = get_contract_factory("DoodleWitness")
     return factory.deploy(args=[], account=accounts[0])
 
 

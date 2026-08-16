@@ -1,4 +1,4 @@
-# UX Copy — WebWitness
+# UX Copy — DoodleWitness
 
 Copy changes are wording-only; no legal, contractual, transaction, or
 verification meaning was altered. Contract-derived values (status strings,
@@ -32,5 +32,5 @@ verdicts, amounts) are rendered exactly as returned — never rewritten.
 - Prefer specific verbs over "..." alone ("Opening case..." not "Loading...").
 - Never claim a pending/consensus action is instant or guaranteed.
 - Keep on-chain terms (bond, verdict, confidence band, settlement) exactly
-  as the contract exposes them — WebWitness's audience expects precision,
+  as the contract exposes them — DoodleWitness's audience expects precision,
   not marketing softening.

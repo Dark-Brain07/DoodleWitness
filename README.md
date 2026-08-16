@@ -1,10 +1,10 @@
-# WebWitness
+# DoodleWitness
 
-WebWitness is a GenLayer project for bonded public evidence certificates. A user submits a public URL, a specific claim, context, and a bond. The Intelligent Contract fetches the source during consensus, decides whether the evidence witnesses or contradicts the claim, and records the result on-chain.
+DoodleWitness is a GenLayer project for bonded public evidence certificates. A user submits a public URL, a specific claim, context, and a bond. The Intelligent Contract fetches the source during consensus, decides whether the evidence witnesses or contradicts the claim, and records the result on-chain.
 
 ## Why It Exists
 
-Public claims often spread faster than verification. WebWitness gives teams a reusable primitive for recording source-backed facts: security disclosures, protocol incidents, published reports, governance notices, grant deliverables, public commitments, and corrections.
+Public claims often spread faster than verification. DoodleWitness gives teams a reusable primitive for recording source-backed facts: security disclosures, protocol incidents, published reports, governance notices, grant deliverables, public commitments, and corrections.
 
 The important part is that the contract does not trust the submitter's summary. Validators fetch the source themselves and compare semantic judgments over the evidence.
 
@@ -22,7 +22,7 @@ The important part is that the contract does not trust the submitter's summary. 
 StudioNet contract:
 
 ```text
-0xE6fe8207d1801F0caE01958b5525F1d7feAaCB00
+0xcE85A028f783E0F8bA8677993FEd5F870eE71e36
 ```
 
 Deployment transaction:
@@ -34,7 +34,7 @@ Deployment transaction:
 Explorer:
 
 ```text
-https://explorer-studio.genlayer.com/address/0xE6fe8207d1801F0caE01958b5525F1d7feAaCB00
+https://explorer-studio.genlayer.com/address/0xcE85A028f783E0F8bA8677993FEd5F870eE71e36
 ```
 
 Main methods:
@@ -56,7 +56,7 @@ Main methods:
 ## Live App
 
 ```text
-https://webwitness.vercel.app
+https://DoodleWitness.vercel.app
 ```
 
 ## On-Chain Proof (StudioNet)
@@ -148,7 +148,7 @@ Create `.env.local`:
 ```bash
 NEXT_PUBLIC_GENLAYER_CHAIN=studionet
 NEXT_PUBLIC_GENLAYER_ENDPOINT=https://studio.genlayer.com/api
-NEXT_PUBLIC_WEBWITNESS_CONTRACT=0xE6fe8207d1801F0caE01958b5525F1d7feAaCB00
+NEXT_PUBLIC_DoodleWitness_CONTRACT=0xcE85A028f783E0F8bA8677993FEd5F870eE71e36
 ```
 
 ## Local Development
@@ -175,7 +175,7 @@ npm run verify:schema
 Current local verification (all real, run this session):
 
 ```text
-genvm-lint check contracts/WebWitness.py --json -> ok: true, lint passed 3, 11 methods (4 view, 7 write)
+genvm-lint check contracts/DoodleWitness.py --json -> ok: true, lint passed 3, 11 methods (4 view, 7 write)
 29 direct contract tests passing (pytest tests/direct/ -v, 2.65s)
 5 StudioNet integration tests passing (gltest tests/integration/ -v -s --network studionet, 337.22s)
 Next.js lint passing (eslint, zero warnings)
@@ -194,21 +194,21 @@ Use public sources that are different from seeded examples:
 
 - URL: `https://blog.cloudflare.com/inside-the-pagerduty-outage-on-june-5-2026/`
 - Claim: `Cloudflare published a public incident writeup about a PagerDuty outage on June 5, 2026.`
-- Context: `WebWitness is recording a public operations timeline certificate for incident-response review.`
+- Context: `DoodleWitness is recording a public operations timeline certificate for incident-response review.`
 
 Or:
 
 - URL: `https://www.cisa.gov/news-events/alerts`
 - Claim: `CISA maintains a public alerts page for cybersecurity advisories and notices.`
-- Context: `WebWitness is recording a source-backed public evidence certificate for a security education artifact.`
+- Context: `DoodleWitness is recording a source-backed public evidence certificate for a security education artifact.`
 
 ## Honest Limits
 
-WebWitness is a public web evidence primitive. It does not verify private documents, paywalled content, or sources that block validator fetching. It records the consensus decision and evidence digest from the transaction, not a permanent full-page archive.
+DoodleWitness is a public web evidence primitive. It does not verify private documents, paywalled content, or sources that block validator fetching. It records the consensus decision and evidence digest from the transaction, not a permanent full-page archive.
 
 Observed while proving out the on-chain surface and the integration suite this session:
 
-- `gltest`'s default `get_accounts()` on StudioNet mints fresh, unfunded ephemeral keys every run. Payable calls fail with an opaque `execution_result: ERROR` and no `error_description` when the sending account has no GEN. `gltest.config.yaml` now pins two funded accounts under `networks.studionet.accounts` (read via `${WEBWITNESS_TEST_STEWARD_KEY}` / `${WEBWITNESS_TEST_REQUESTER_KEY}` from the gitignored `.env`, resolved by gltest's own `${VAR}` substitution) so the integration suite runs against real balances instead of empty ones.
+- `gltest`'s default `get_accounts()` on StudioNet mints fresh, unfunded ephemeral keys every run. Payable calls fail with an opaque `execution_result: ERROR` and no `error_description` when the sending account has no GEN. `gltest.config.yaml` now pins two funded accounts under `networks.studionet.accounts` (read via `${DoodleWitness_TEST_STEWARD_KEY}` / `${DoodleWitness_TEST_REQUESTER_KEY}` from the gitignored `.env`, resolved by gltest's own `${VAR}` substitution) so the integration suite runs against real balances instead of empty ones.
 - The same deployer account cannot also be the case requester: `open_case` explicitly rejects `gl.message.sender_address == self.steward`, and the deploying account becomes `steward`. The integration tests deploy from `accounts[0]` and always act as the requester from `accounts[1]`.
 - Both live-consensus rounds proven this session (`witness_case` in isolation, and the `witness_case` -> `open_challenge` -> `review_challenge` cycle) returned a clean `WITNESSED` verdict with `HIGH` confidence on the first attempt -- no `UNDETERMINED`/`VALIDATORS_TIMEOUT`/`LEADER_TIMEOUT` retries were needed, though the integration tests still wrap consensus writes in a retry helper since GenLayer's own docs treat those statuses as expected/retryable, not exceptional.
 - The `genlayer` CLI's `write` command hardcodes `value: 0n` and cannot exercise the payable `open_case` path, so the on-chain proof above uses a standalone `genlayer-js` script (`scripts/exercise-studionet.mjs` plus `scripts/settle-case.mjs` for permissionless settlement) instead of the CLI.

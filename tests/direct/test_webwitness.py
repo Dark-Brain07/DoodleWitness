@@ -18,7 +18,7 @@ def mock_witness(direct_vm, verdict="WITNESSED", confidence="HIGH"):
     direct_vm.mock_web(r".*example\.com/evidence.*", {"status": 200, "body": "public advisory disclosed supply-chain backdoor"})
     direct_vm.mock_web(r".*example\.com/challenge.*", {"status": 200, "body": "additional public analysis confirms the disclosure"})
     direct_vm.mock_llm(
-        r".*WebWitness, an evidence notary.*",
+        r".*DoodleWitness, an evidence notary.*",
         f'{{"verdict":"{verdict}","confidence_band":"{confidence}","snapshot_digest":"advisory:backdoor","evidence_summary":"The page supports the claim.","rationale":"The cited source describes the disclosure."}}',
     )
 

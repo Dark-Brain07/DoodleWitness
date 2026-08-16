@@ -1,4 +1,4 @@
-# Screen Inventory — WebWitness
+# Screen Inventory — DoodleWitness
 
 | Route | File | Purpose | Key states covered |
 | --- | --- | --- | --- |
@@ -13,6 +13,6 @@
 
 All five routes and every component above were inspected in source and
 exercised via a local dev server (`npm run dev`) reading the live configured
-StudioNet contract (`NEXT_PUBLIC_WEBWITNESS_CONTRACT` in `.env.local`);
+StudioNet contract (`NEXT_PUBLIC_DoodleWitness_CONTRACT` in `.env.local`);
 rendered text was captured via the browser tooling's accessibility/text
 extraction (see `DESIGN_QA_REPORT.md` for what was verified this way).

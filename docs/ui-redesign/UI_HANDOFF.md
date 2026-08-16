@@ -1,4 +1,4 @@
-# UI Handoff — WebWitness
+# UI Handoff — DoodleWitness
 
 ## Completed screens
 Home (`/`), Cases (`/cases`), Case detail (`/cases/[caseId]`), New case

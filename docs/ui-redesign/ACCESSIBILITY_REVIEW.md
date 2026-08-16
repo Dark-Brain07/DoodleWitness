@@ -1,4 +1,4 @@
-# Accessibility Review — WebWitness
+# Accessibility Review — DoodleWitness
 
 ## Method
 Manual review of every route's rendered DOM/text (via browser accessibility

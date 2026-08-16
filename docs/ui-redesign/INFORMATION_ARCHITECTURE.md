@@ -1,4 +1,4 @@
-# Information Architecture — WebWitness
+# Information Architecture — DoodleWitness
 
 ## Routes (unchanged — all preserved exactly)
 - `/` — Evidence desk home: network stats + recent cases + how-it-works rail.

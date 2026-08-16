@@ -46,7 +46,7 @@ export function DashboardClient() {
       <main className="mx-auto max-w-7xl px-5 py-10">
         <div className="panel p-6">
           <div className="label">Witness Profile</div>
-          <h1 className="section-title mt-2">Connect a wallet to read your WebWitness profile</h1>
+          <h1 className="section-title mt-2">Connect a wallet to read your DoodleWitness profile</h1>
           <p className="mt-4 max-w-2xl leading-7 text-muted">
             Profiles are assembled from contract state: bonded cases, witness results, challenge work, and bond settlement totals.
           </p>
@@ -89,7 +89,7 @@ export function DashboardClient() {
           <div className="label text-brand">Why this profile matters</div>
         </div>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-gray-300">
-          A WebWitness profile is not an off-chain account page. It is read from the intelligent contract, so the bond totals, witness results, challenges, and settlements reflect the same state reviewers and counterparties can inspect.
+          A DoodleWitness profile is not an off-chain account page. It is read from the intelligent contract, so the bond totals, witness results, challenges, and settlements reflect the same state reviewers and counterparties can inspect.
         </p>
       </section>
     </main>

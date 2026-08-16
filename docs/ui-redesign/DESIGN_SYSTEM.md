@@ -1,4 +1,4 @@
-# Design System — WebWitness
+# Design System — DoodleWitness
 
 All tokens live in `src/app/globals.css` under `:root` and are mapped into
 Tailwind v4 via `@theme inline`. Components are plain utility classes (no

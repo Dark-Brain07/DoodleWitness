@@ -31,4 +31,4 @@ def warp_to(direct_vm, iso: str) -> None:
 
 @pytest.fixture
 def contract(direct_deploy):
-    return direct_deploy("contracts/WebWitness.py")
+    return direct_deploy("contracts/DoodleWitness.py")

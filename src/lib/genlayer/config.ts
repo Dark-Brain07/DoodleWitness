@@ -1,6 +1,6 @@
 import { localnet, studionet, testnetAsimov, testnetBradbury } from "genlayer-js/chains";
 
-export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_WEBWITNESS_CONTRACT as `0x${string}` | undefined;
+export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_DOODLEWITNESS_CONTRACT as `0x${string}` | undefined;
 export const GENLAYER_ENDPOINT = process.env.NEXT_PUBLIC_GENLAYER_ENDPOINT ?? "https://studio.genlayer.com/api";
 
 export const CHAIN_NAME = (process.env.NEXT_PUBLIC_GENLAYER_CHAIN ?? "studionet") as

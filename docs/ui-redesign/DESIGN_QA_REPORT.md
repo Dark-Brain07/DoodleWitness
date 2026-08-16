@@ -1,4 +1,4 @@
-# Design QA Report — WebWitness
+# Design QA Report — DoodleWitness
 
 ## Product appropriateness
 The verdigris/ink-green "Notary Ledger" palette and mono-for-record-data

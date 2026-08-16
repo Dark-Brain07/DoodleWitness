@@ -1,7 +1,7 @@
-# UI Audit — WebWitness (pre-redesign baseline)
+# UI Audit — DoodleWitness (pre-redesign baseline)
 
 ## Product summary
-See `UI_BRIEF.md`. WebWitness is a five-route Next.js App Router app: home
+See `UI_BRIEF.md`. DoodleWitness is a five-route Next.js App Router app: home
 (`/`), case registry (`/cases`), case detail (`/cases/[caseId]`), new case
 (`/cases/new`), and a wallet-gated dashboard (`/dashboard`).
 
@@ -90,7 +90,7 @@ Case/Dashboard except the wallet menu and homepage links.
   math and status-tone mapping).
 - `src/lib/storage.ts`, `src/lib/types.ts` — storage keys and data shapes.
 - `.env.local` variable names (`NEXT_PUBLIC_GENLAYER_CHAIN`,
-  `NEXT_PUBLIC_GENLAYER_ENDPOINT`, `NEXT_PUBLIC_WEBWITNESS_CONTRACT`).
+  `NEXT_PUBLIC_GENLAYER_ENDPOINT`, `NEXT_PUBLIC_DoodleWitness_CONTRACT`).
 - `contracts/`, `scripts/verify-schema.mjs`, `gltest.config.yaml`.
 
 ## Files safe for visual refactoring

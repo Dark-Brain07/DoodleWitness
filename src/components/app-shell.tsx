@@ -20,8 +20,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className="border-b border-line bg-bg/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-4">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/webwitness-mark.svg" alt="WebWitness" width={40} height={40} className="rounded-xl" priority />
-            <span className="hidden text-xl font-bold tracking-tight sm:inline">WebWitness</span>
+            <Image src="/doodlewitness-mark.svg" alt="DoodleWitness" width={40} height={40} className="rounded-xl" priority />
+            <span className="hidden text-xl font-bold tracking-tight sm:inline">DoodleWitness</span>
           </Link>
           <nav className="hidden items-center gap-3 md:flex" aria-label="Primary">
             {NAV_LINKS.map((link) => (
@@ -54,7 +54,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </header>
       {children}
       <footer className="mx-auto max-w-7xl px-5 py-10 text-sm text-muted">
-        WebWitness stores bonded public web claims, validator witness decisions, challenges, and settlement state in a GenLayer intelligent contract.
+        DoodleWitness stores bonded public image claims, validator witness decisions, challenges, and settlement state in a GenLayer intelligent contract.
       </footer>
     </div>
   );

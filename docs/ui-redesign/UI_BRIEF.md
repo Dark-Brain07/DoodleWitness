@@ -1,7 +1,7 @@
-# UI Brief — WebWitness
+# UI Brief — DoodleWitness
 
-## What WebWitness is
-WebWitness is a bonded public-web-event notary built on GenLayer. A requester
+## What DoodleWitness is
+DoodleWitness is a bonded public-web-event notary built on GenLayer. A requester
 opens a case with a public URL, a precise claim, context, and a GEN bond.
 Validators fetch the live URL inside consensus, form a semantic verdict
 (witnessed / contradicted / cannot establish), and the contract stores the

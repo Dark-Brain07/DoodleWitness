@@ -17,7 +17,7 @@ export default async function Home() {
         <span className="docket-number">DESK NO. WW-01</span>
         <div className="mt-5 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <h1 id="hero-heading" className="max-w-5xl text-4xl font-black leading-[0.98] tracking-0 text-text md:text-6xl">
-            A contract-side witness log for claims the public web can prove.
+            A contract-side witness log for claims public doodles and images can prove.
           </h1>
           <div className="flex shrink-0 flex-wrap gap-3">
             <Link href="/cases/new" className="btn-primary">
@@ -67,8 +67,8 @@ export default async function Home() {
             <Link href="/cases" className="btn-secondary">View all cases</Link>
           </div>
           <p className="mt-4 max-w-3xl text-sm leading-6 text-gray-300">
-            WebWitness does not ask validators to grade a user-written story. Each case points them at public
-            evidence, then the contract stores the resulting verdict, challenge record, and bond settlement path.
+            DoodleWitness does not ask validators to grade a user-written story. Each case points them at public
+            image evidence, then the contract stores the resulting verdict, challenge record, and bond settlement path.
           </p>
           {cases.length === 0 ? (
             <div className="callout callout-info mt-6">

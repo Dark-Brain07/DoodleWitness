@@ -8,12 +8,12 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "WebWitness",
-  description: "Bonded public web claims witnessed by GenLayer consensus.",
+  title: "DoodleWitness",
+  description: "A contract-side evidence notary.",
   icons: {
-    icon: "/webwitness-mark.svg",
-    shortcut: "/webwitness-mark.svg",
-    apple: "/webwitness-mark.svg",
+    icon: "/doodlewitness-mark.svg",
+    shortcut: "/doodlewitness-mark.svg",
+    apple: "/doodlewitness-mark.svg",
   },
 };
 

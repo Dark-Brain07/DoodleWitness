@@ -1,13 +1,13 @@
-# Art Direction — WebWitness: "Notary Ledger"
+# Art Direction — DoodleWitness: "Notary Ledger"
 
 ## Sibling-project check (read-only)
 - `permamission` uses a dark coal/gold palette.
 - `rainline` uses a storm/amber palette.
-WebWitness intentionally avoids both: no coal-black + gold, no storm-grey +
+DoodleWitness intentionally avoids both: no coal-black + gold, no storm-grey +
 amber-only accent. It uses an **ink-green + verdigris + rust** system below.
 
 ## Visual concept
-WebWitness notarizes public evidence — it fetches a real page and records a
+DoodleWitness notarizes public evidence — it fetches a real page and records a
 consensus judgment on-chain, the way a notary stamps a document after
 witnessing it. The concept is an **archival notary desk / evidence ledger**:
 deep ink-green "paper under lamplight" backgrounds, a verdigris accent (the
@@ -60,7 +60,7 @@ shield, file-check) — no new icon set introduced.
 ## Data-visualisation style
 Stat tiles remain plain mono numerals in labeled panels — accurate,
 unembellished network figures, not decorative sparkline/donut charts that
-would imply data WebWitness doesn't compute.
+would imply data DoodleWitness doesn't compute.
 
 ## Motion principles
 Short (140–160ms) ease transitions on hover/press only; `1px` lift on

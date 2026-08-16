@@ -1,4 +1,4 @@
-# Logic Preservation Report — WebWitness
+# Logic Preservation Report — DoodleWitness
 
 ## Logic-sensitive files identified (see UI_AUDIT.md for detail)
 `src/lib/genlayer/*`, `src/components/wallet-provider.tsx`,

@@ -1,8 +1,8 @@
-# WebWitness Decision Record
+# DoodleWitness Decision Record
 
 ## Chosen Project
 
-WebWitness is a bonded public web-event notary for GenLayer. A user submits a public URL, a precise natural-language claim, and a bond. The contract fetches the public source during consensus, asks validators to decide whether the live evidence witnesses, contradicts, or cannot establish the claim, and records the decision on-chain. Challenged decisions can be re-reviewed with a second public source.
+DoodleWitness is a bonded public web-event notary for GenLayer. A user submits a public URL, a precise natural-language claim, and a bond. The contract fetches the public source during consensus, asks validators to decide whether the live evidence witnesses, contradicts, or cannot establish the claim, and records the decision on-chain. Challenged decisions can be re-reviewed with a second public source.
 
 ## Candidate Scan
 
@@ -18,9 +18,9 @@ WebWitness is a bonded public web-event notary for GenLayer. A user submits a pu
 | Procurement delivery witness | Web/image fetch, performance judging | Escrow payout | Real product, but less reusable as an ecosystem primitive. |
 | Data-source dispute court | Multi-source fetch, arbitration | Bonded appeal | Strong, but overlaps with broad arbitration projects. |
 
-## Why WebWitness
+## Why DoodleWitness
 
-WebWitness solves a genuine trust problem: a user should not be able to claim that a public source proved something unless validators fetched and interpreted the source themselves. This is not a wrapper around better AI answers. The contract itself owns the evidence flow, consensus decision, state transitions, challenge review, and bonded settlement.
+DoodleWitness solves a genuine trust problem: a user should not be able to claim that a public source proved something unless validators fetched and interpreted the source themselves. This is not a wrapper around better AI answers. The contract itself owns the evidence flow, consensus decision, state transitions, challenge review, and bonded settlement.
 
 ## GenLayer Usage
 
@@ -33,7 +33,7 @@ WebWitness solves a genuine trust problem: a user should not be able to claim th
 
 ## Reuse Potential
 
-Other GenLayer projects can use WebWitness as a primitive for public evidence certificates: security incident timelines, grant reports, accountability logs, protocol notices, content publication proofs, and dispute evidence records.
+Other GenLayer projects can use DoodleWitness as a primitive for public evidence certificates: security incident timelines, grant reports, accountability logs, protocol notices, content publication proofs, and dispute evidence records.
 
 ## Review Gates
 
@@ -45,4 +45,4 @@ Other GenLayer projects can use WebWitness as a primitive for public evidence ce
 
 ## Known Limits
 
-WebWitness witnesses public web pages, not private documents or paywalled data. It records a semantic digest rather than a cryptographic archive of the entire page. If a source changes later, the recorded decision remains a timestamped consensus judgment over what validators fetched during that transaction.
+DoodleWitness witnesses public web pages, not private documents or paywalled data. It records a semantic digest rather than a cryptographic archive of the entire page. If a source changes later, the recorded decision remains a timestamped consensus judgment over what validators fetched during that transaction.
